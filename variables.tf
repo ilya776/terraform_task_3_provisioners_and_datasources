@@ -1,23 +1,39 @@
-variable "prefix" {
-  description = "Prefix for all resources"
+variable "resource_group_name" {
+  description = "Resource group name with existing resources"
   type        = string
-  default     = "mydemo"
 }
 
 variable "location" {
-  description = "Azure region"
+  description = "Azure location"
   type        = string
-  default     = "West Europe"
 }
 
-variable "vm_admin_user" {
+variable "vnet_name" {
+  description = "Existing Virtual Network name"
+  type        = string
+}
+
+variable "subnet_name" {
+  description = "Existing Subnet name"
+  type        = string
+}
+
+variable "nic_name" {
+  description = "Existing Network Interface name"
+  type        = string
+}
+
+variable "vm_name" {
+  description = "Existing Virtual Machine name"
+  type        = string
+}
+
+variable "admin_username" {
   description = "Admin username for VM"
   type        = string
-  default     = "testadmin"
 }
 
-variable "vm_admin_password" {
-  description = "Password for VM"
+variable "admin_password" {
+  description = "Admin password for VM"
   type        = string
-  default     = "Password1234!"
 }

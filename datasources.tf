@@ -1,45 +1,24 @@
-resource "null_resource" "nginx_setup" {
-  depends_on = [azurerm_virtual_machine.main]
+data "azurerm_resource_group" "example" {
+  name = var.resource_group_name
+}
 
-  provisioner "remote-exec" {
-    inline = [
-      "sudo apt-get update -y",
-      "sudo apt-get install -y nginx",
-      "sudo systemctl enable nginx",
-      "sudo systemctl start nginx"
-    ]
+data "azurerm_virtual_network" "main" {
+  name                = var.vnet_name
+  resource_group_name = data.azurerm_resource_group.example.name
+}
 
-    connection {
-      type     = "ssh"
-      user     = var.vm_admin_user
-      password = var.vm_admin_password
-      host     = azurerm_network_interface.main.private_ip_address
-    }
-  }
+data "azurerm_subnet" "internal" {
+  name                 = var.subnet_name
+  virtual_network_name = data.azurerm_virtual_network.main.name
+  resource_group_name  = data.azurerm_resource_group.example.name
+}
 
-  provisioner "file" {
-    source      = "index.html"
-    destination = "/tmp/index.html"
+data "azurerm_network_interface" "main" {
+  name                = var.nic_name
+  resource_group_name = data.azurerm_resource_group.example.name
+}
 
-    connection {
-      type     = "ssh"
-      user     = var.vm_admin_user
-      password = var.vm_admin_password
-      host     = azurerm_network_interface.main.private_ip_address
-    }
-  }
-
-  provisioner "remote-exec" {
-    inline = [
-      "sudo mv /tmp/index.html /var/www/html/index.html",
-      "sudo systemctl restart nginx"
-    ]
-
-    connection {
-      type     = "ssh"
-      user     = var.vm_admin_user
-      password = var.vm_admin_password
-      host     = azurerm_network_interface.main.private_ip_address
-    }
-  }
+data "azurerm_virtual_machine" "main" {
+  name                = var.vm_name
+  resource_group_name = data.azurerm_resource_group.example.name
 }
